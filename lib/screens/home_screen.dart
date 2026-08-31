@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
-import '../data/coffee_data.dart';
-import '../models/category.dart';
-import '../widgets/special_card.dart';
+import '../data/home_data.dart';
+import '../widgets/order_card.dart';
+import '../widgets/service_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,30 +17,37 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.background,
       body: SafeArea(
         bottom: false,
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 8),
               _buildHeader(),
-              const SizedBox(height: 20),
-              _buildGreeting(),
-              const SizedBox(height: 18),
               _buildPromoBanner(),
-              const SizedBox(height: 16),
-              _buildPointsCard(),
-              const SizedBox(height: 24),
-              _buildSectionHeader('Menu Favorit'),
-              const SizedBox(height: 16),
-              _buildCategories(),
-              const SizedBox(height: 24),
-              _buildSectionHeader('Rekomendasi Untukmu'),
-              const SizedBox(height: 16),
-              _buildRecommendations(),
-              const SizedBox(height: 24),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Pesan Sekarang?',
+                        style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary)),
+                    const SizedBox(height: 16),
+                    _buildOrderOptions(),
+                    const SizedBox(height: 20),
+                    const Divider(color: AppColors.cream, thickness: 1.5),
+                    const SizedBox(height: 16),
+                    _buildSpecialHeader(),
+                    const SizedBox(height: 16),
+                    _buildSpecialGrid(),
+                    const SizedBox(height: 8),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
@@ -49,280 +56,313 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // --- Header: logo + notification bell ---
+  // --- Header: brand + auth buttons + bell ---
   Widget _buildHeader() {
-    return Row(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: AppColors.cream,
-            borderRadius: BorderRadius.circular(12),
+    return Container(
+      color: AppColors.background,
+      padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(child: _buildBrand()),
+              _buildBell(),
+            ],
           ),
-          child: const Icon(Icons.coffee, color: AppColors.primary),
-        ),
-        const SizedBox(width: 10),
-        const Text(
-          'BHINNEEKA',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.5,
-            color: AppColors.textPrimary,
-          ),
-        ),
-        const Spacer(),
-        Stack(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: AppColors.card,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () {},
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.textPrimary,
+                    side: const BorderSide(color: AppColors.primary, width: 1.5),
+                    shape: const StadiumBorder(),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
                   ),
-                ],
-              ),
-              child: const Icon(Icons.notifications_none,
-                  color: AppColors.textPrimary),
-            ),
-            Positioned(
-              right: 9,
-              top: 9,
-              child: Container(
-                width: 8,
-                height: 8,
-                decoration: const BoxDecoration(
-                  color: AppColors.primary,
-                  shape: BoxShape.circle,
+                  child: const Text('Masuk',
+                      style: TextStyle(fontWeight: FontWeight.w600)),
                 ),
               ),
-            ),
-          ],
-        ),
-      ],
+              const SizedBox(width: 12),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: AppColors.primaryDark,
+                    elevation: 0,
+                    shape: const StadiumBorder(),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                  ),
+                  child: const Text('Buat Akun',
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
-  // --- Greeting text ---
-  Widget _buildGreeting() {
+  Widget _buildBrand() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: const [
-        Text('Selamat datang di Bhinneeka',
-            style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary)),
-        SizedBox(height: 4),
-        Text('Mulai hari Anda dengan secangkir kopi',
-            style: TextStyle(fontSize: 13, color: AppColors.textSecondary)),
-      ],
-    );
-  }
-
-  // --- Promo banner ---
-  Widget _buildPromoBanner() {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.cream,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: IntrinsicHeight(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(18),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: AppColors.primary,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: const Text('PROMO SPESIAL',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 0.5)),
-                    ),
-                    const SizedBox(height: 10),
-                    const Text('Diskon 9%',
-                        style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.textPrimary)),
-                    const Text('Semua Coffee',
-                        style: TextStyle(
-                            fontSize: 15, color: AppColors.textSecondary)),
-                    const SizedBox(height: 12),
-                    ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        foregroundColor: Colors.white,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30)),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 10),
-                      ),
-                      child: const Text('Lihat Menu'),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topRight: Radius.circular(20),
-                bottomRight: Radius.circular(20),
-              ),
-              child: Image.network(
-                'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=300&q=80',
-                width: 130,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stack) => Container(
-                  width: 130,
-                  color: AppColors.primary.withOpacity(0.15),
-                  child: const Icon(Icons.local_cafe,
-                      size: 48, color: AppColors.primary),
-                ),
-              ),
+      children: [
+        const Text('Selamat Datang di',
+            style: TextStyle(fontSize: 13, color: AppColors.textPrimary)),
+        const SizedBox(height: 2),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: const [
+            Text('Bhinneeka',
+                style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primaryDark,
+                    height: 1.0)),
+            SizedBox(width: 4),
+            Padding(
+              padding: EdgeInsets.only(top: 4),
+              child: Icon(Icons.local_florist,
+                  size: 16, color: AppColors.primary),
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  // --- Loyalty points card ---
-  Widget _buildPointsCard() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.card,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.cream, width: 1.5),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: AppColors.cream,
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: const Icon(Icons.stars_rounded, color: AppColors.primary),
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text('1.250 Poin',
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary)),
-                SizedBox(height: 2),
-                Text('Kumpulkan poin setiap pembelian',
-                    style: TextStyle(
-                        fontSize: 12, color: AppColors.textSecondary)),
-              ],
-            ),
-          ),
-          const SizedBox(width: 10),
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: AppColors.primary,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: const Icon(Icons.chevron_right, color: Colors.white),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // --- Section header with "Lihat Semua" ---
-  Widget _buildSectionHeader(String title) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(title,
-            style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary)),
-        const Text('Lihat Semua',
+        const SizedBox(height: 4),
+        const Text('RASA KOPI, RASA INDONESIA',
             style: TextStyle(
-                fontSize: 13,
-                color: AppColors.primary,
-                fontWeight: FontWeight.w600)),
-      ],
-    );
-  }
-
-  // --- Category row ---
-  Widget _buildCategories() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: menuCategories.map(_categoryItem).toList(),
-    );
-  }
-
-  Widget _categoryItem(Category category) {
-    return Column(
-      children: [
-        Container(
-          width: 62,
-          height: 62,
-          decoration: BoxDecoration(
-            color: AppColors.cream,
-            borderRadius: BorderRadius.circular(18),
-          ),
-          child: Icon(category.icon, color: AppColors.primary, size: 26),
-        ),
-        const SizedBox(height: 8),
-        Text(category.label,
-            style: const TextStyle(
-                fontSize: 12,
+                fontSize: 10,
+                letterSpacing: 1.5,
                 color: AppColors.textPrimary,
                 fontWeight: FontWeight.w500)),
       ],
     );
   }
 
-  // --- Horizontal recommendation list ---
-  Widget _buildRecommendations() {
-    return SizedBox(
-      height: 200,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: recommendations.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 14),
-        itemBuilder: (context, i) => SpecialCard(coffee: recommendations[i]),
+  Widget _buildBell() {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: const BoxDecoration(
+        color: AppColors.cream,
+        shape: BoxShape.circle,
       ),
+      child: const Icon(Icons.notifications_none, color: AppColors.primaryDark),
+    );
+  }
+
+  // --- Promo banner (full-width gold gradient) ---
+  Widget _buildPromoBanner() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [AppColors.bannerStart, AppColors.bannerEnd],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+      child: Column(
+        children: [
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(child: _buildPromoText()),
+                const SizedBox(width: 12),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: Image.network(
+                    'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=400&q=80',
+                    width: 120,
+                    height: 180,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stack) => Container(
+                      width: 120,
+                      height: 180,
+                      color: Colors.white.withOpacity(0.25),
+                      child: const Icon(Icons.local_cafe,
+                          size: 48, color: AppColors.primaryDark),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 14),
+          _buildDots(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPromoText() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.55),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: const [
+              Icon(Icons.local_florist, size: 14, color: AppColors.primaryDark),
+              SizedBox(width: 6),
+              Text('PROMO HARI INI',
+                  style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primaryDark,
+                      letterSpacing: 0.5)),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+        const Text('Diskon 9%',
+            style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: AppColors.primaryDark,
+                height: 1.1)),
+        const Text('Semua Coffee',
+            style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: AppColors.primaryDark,
+                height: 1.1)),
+        const SizedBox(height: 10),
+        Row(
+          children: const [
+            Icon(Icons.access_time, size: 16, color: AppColors.primaryDark),
+            SizedBox(width: 6),
+            Text('11.00 \u2013 19:00',
+                style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.primaryDark)),
+          ],
+        ),
+        const SizedBox(height: 14),
+        ElevatedButton(
+          onPressed: () {},
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.primaryDark,
+            foregroundColor: Colors.white,
+            elevation: 0,
+            shape: const StadiumBorder(),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: const [
+              Text('Lihat Promo'),
+              SizedBox(width: 6),
+              Icon(Icons.arrow_forward, size: 16),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDots() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(3, (i) {
+        final active = i == 0;
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          margin: const EdgeInsets.symmetric(horizontal: 3),
+          width: active ? 18 : 7,
+          height: 7,
+          decoration: BoxDecoration(
+            color: active
+                ? AppColors.primaryDark
+                : AppColors.primaryDark.withOpacity(0.3),
+            borderRadius: BorderRadius.circular(4),
+          ),
+        );
+      }),
+    );
+  }
+
+  // --- "Pesan Sekarang?" order options ---
+  Widget _buildOrderOptions() {
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(child: OrderCard(item: orderOptions[0])),
+          const SizedBox(width: 14),
+          Expanded(child: OrderCard(item: orderOptions[1])),
+        ],
+      ),
+    );
+  }
+
+  // --- "Spesial Untukmu" header ---
+  Widget _buildSpecialHeader() {
+    return Row(
+      children: [
+        const Expanded(
+          child: Text('Spesial Untukmu di Bhinneeka.',
+              style: TextStyle(
+                  fontSize: 19,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary)),
+        ),
+        const SizedBox(width: 8),
+        Row(
+          children: const [
+            Text('Lihat Semua',
+                style: TextStyle(
+                    fontSize: 13,
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.w600)),
+            SizedBox(width: 4),
+            Icon(Icons.arrow_forward, size: 14, color: AppColors.primary),
+          ],
+        ),
+      ],
+    );
+  }
+
+  // --- "Spesial Untukmu" 2x2 grid ---
+  Widget _buildSpecialGrid() {
+    return Column(
+      children: [
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(child: ServiceCard(item: specialServices[0])),
+              const SizedBox(width: 14),
+              Expanded(child: ServiceCard(item: specialServices[1])),
+            ],
+          ),
+        ),
+        const SizedBox(height: 14),
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(child: ServiceCard(item: specialServices[2])),
+              const SizedBox(width: 14),
+              Expanded(child: ServiceCard(item: specialServices[3])),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -345,11 +385,10 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _navItem(Icons.home_rounded, 'Beranda', 0),
-            _navItem(Icons.restaurant_menu, 'Menu', 1),
-            _navItem(Icons.receipt_long, 'Pesanan', 2),
-            _navItem(Icons.card_giftcard, 'Poin', 3),
-            _navItem(Icons.person_outline, 'Profil', 4),
+            _navItem(Icons.home_rounded, 'Home', 0),
+            _navItem(Icons.shopping_bag_outlined, 'Pesanan', 1),
+            _navItem(Icons.local_offer_outlined, 'Voucher', 2),
+            _navItem(Icons.person_outline, 'Akun', 3),
           ],
         ),
       ),
@@ -365,7 +404,16 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, color: color, size: 24),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+            decoration: BoxDecoration(
+              color: selected
+                  ? AppColors.primary.withOpacity(0.15)
+                  : Colors.transparent,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Icon(icon, color: color, size: 24),
+          ),
           const SizedBox(height: 4),
           Text(label,
               style: TextStyle(
